@@ -5,7 +5,7 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-brr_chain_farm_dapp = "9jwG9xjKst1ARJ1SFWjydPNqAykE7yhvqVYsDDGbsSFD"
+brr_chain_farm_dapp = "8y7XECnahJx8Lg6FwRSLeVWKCftj2RTen6G951AWGreT"
 
 [registry]
 url = "https://api.apr.dev"

@@ -1,17 +1,33 @@
 import { Keypair } from '@solana/web3.js';
 import { useBrrChainFarmDappProgram } from './brr-chain-farm-dapp-data-access';
+import { useEffect } from 'react';
 
 export function BrrChainFarmDappCreate() {
-  const { greet } = useBrrChainFarmDappProgram();
-
+  const { init_pool, create_user, start_farming } = useBrrChainFarmDappProgram();
+  useEffect(()=>{
+    start_farming.mutateAsync()
+  },[])
   return (
-    <button
-      className="btn btn-xs lg:btn-md btn-primary"
-      onClick={() => greet.mutateAsync(Keypair.generate())}
-      disabled={greet.isPending}
-    >
-      Run program{greet.isPending && '...'}
-    </button>
+    <>
+    {!start_farming.isPending&&(
+      <>
+      <button
+        className="btn btn-xs lg:btn-md btn-primary"
+        onClick={() => init_pool.mutateAsync()}
+        disabled={init_pool.isPending}
+      >
+        Init Pool{init_pool.isPending && '...'}
+      </button>
+      <button
+        className="btn btn-xs lg:btn-md btn-primary"
+        onClick={() => create_user.mutateAsync()}
+        disabled={create_user.isPending}
+      >
+        Create User{create_user.isPending && '...'}
+      </button>
+      </>
+    )}
+    </>
   );
 }
 
