@@ -1,0 +1,11 @@
+{
+  "version": "0.1.0",
+  "name": "brr_chain_farm_dapp",
+  "instructions": [
+    {
+      "name": "greet",
+      "accounts": [],
+      "args": []
+    }
+  ]
+}
