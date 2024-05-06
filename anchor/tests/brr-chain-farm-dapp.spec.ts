@@ -34,20 +34,20 @@ function sleep(ms: number) {
 
 describe('brr-chain-farm-dapp', () => {
 
-  let stakingMint: anchor.web3.PublicKey = null;
-  let rewardMint: anchor.web3.PublicKey = null;
+  let stakingMint: anchor.web3.PublicKey;
+  let rewardMint: anchor.web3.PublicKey;
 
-  let stakingToken: Token = null;
-  let rewardToken: Token = null;
+  let stakingToken;
+  let rewardToken;
 
-  let userStakingATA: anchor.web3.PublicKey = null;
-  let userRewardATA: anchor.web3.PublicKey = null;
+  let userStakingATA: anchor.web3.PublicKey;
+  let userRewardATA: anchor.web3.PublicKey;
 
-  let otheruserStakingATA: anchor.web3.PublicKey = null;
-  let otheruserRewardATA: anchor.web3.PublicKey = null;
+  let otheruserStakingATA: anchor.web3.PublicKey;
+  let otheruserRewardATA: anchor.web3.PublicKey;
 
-  let adminStakingATA: anchor.web3.PublicKey = null;
-  let adminRewardATA: anchor.web3.PublicKey = null;
+  let adminStakingATA: anchor.web3.PublicKey;
+  let adminRewardATA: anchor.web3.PublicKey;
 
   it('Sarting...', async () => {
     // Add your test here.

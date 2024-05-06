@@ -1,7 +1,7 @@
 import { programId, BrrChainFarmDappIDL } from '@brr-chain-farm-dapp/anchor';
 import { Program } from '@coral-xyz/anchor';
 import * as anchor from '@coral-xyz/anchor'
-import { useConnection } from '@solana/wallet-adapter-react';
+import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Keypair, sendAndConfirmTransaction } from '@solana/web3.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
@@ -11,6 +11,7 @@ import { useTransactionToast } from '../ui/ui-layout';
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import {TOKEN_PROGRAM_ID,createAssociatedTokenAccount,createMint,mintTo} from '@solana/spl-token'
 import {getPoolPda,getStakingVaultPda,getRewardAVaultPda,getUserPda} from './utils'
+import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet';
 function sleep(ms: number) {
   return new Promise((res) => {
     setTimeout(res, ms);
@@ -24,52 +25,56 @@ export function useBrrChainFarmDappProgram() {
   const transactionToast = useTransactionToast();
   const provider = useAnchorProvider();
   const program = new Program(BrrChainFarmDappIDL, programId, provider);
-
+  const wallet = useAnchorWallet()
+  // const payer = (wallet as NodeWallet).payer
 
   const BASE_KEYPAIR = anchor.web3.Keypair.generate();
-    const ADMIN_KEYPAIR = anchor.web3.Keypair.generate();
-    const USER_KEYPAIR = anchor.web3.Keypair.generate();
-    const OTHER_USER_KEYPAIR = anchor.web3.Keypair.generate();
-    const FUNDER_KEYPAIR = anchor.web3.Keypair.generate();
+  const ADMIN_KEYPAIR = anchor.web3.Keypair.generate();
+  const USER_KEYPAIR = anchor.web3.Keypair.generate();
+  const OTHER_USER_KEYPAIR = anchor.web3.Keypair.generate();
+  const FUNDER_KEYPAIR = anchor.web3.Keypair.generate();
 
-    //Declaring Tokens
-    var stakingMint: anchor.web3.PublicKey ;
-    var rewardMint: anchor.web3.PublicKey ;
+  //Declaring Tokens
+  var stakingMint: anchor.web3.PublicKey ;
+  var rewardMint: anchor.web3.PublicKey ;
 
-    var stakingToken ;
-    var rewardToken ;
+  var stakingToken ;
+  var rewardToken ;
 
-    var userStakingATA: anchor.web3.PublicKey ;
-    var userRewardATA: anchor.web3.PublicKey ;
+  var userStakingATA: anchor.web3.PublicKey ;
+  var userRewardATA: anchor.web3.PublicKey ;
 
-    var otheruserStakingATA: anchor.web3.PublicKey ;
-    var otheruserRewardATA: anchor.web3.PublicKey ;
+  var otheruserStakingATA: anchor.web3.PublicKey ;
+  var otheruserRewardATA: anchor.web3.PublicKey ;
 
-    var adminStakingATA: anchor.web3.PublicKey ;
-    var adminRewardATA: anchor.web3.PublicKey ;
+  var adminStakingATA: anchor.web3.PublicKey ;
+  var adminRewardATA: anchor.web3.PublicKey ;
 
 
   const start_farming=useMutation({
     mutationKey:['Farming','start',{cluster}],
     mutationFn:async ()=>{
-      var sig = await program.provider.connection.requestAirdrop(
-        ADMIN_KEYPAIR.publicKey,
-        10000 * LAMPORTS_PER_SOL
-      );
-      await sleep(500);
-      await program.provider.connection.confirmTransaction(sig);
-      sig = await program.provider.connection.requestAirdrop(
-        USER_KEYPAIR.publicKey,
-        100 * LAMPORTS_PER_SOL
-      );
-      await sleep(500);
-      await program.provider.connection.confirmTransaction(sig);
-      sig = await program.provider.connection.requestAirdrop(
-        OTHER_USER_KEYPAIR.publicKey,
-        100 * LAMPORTS_PER_SOL
-      );
-      await sleep(500);
-      await program.provider.connection.confirmTransaction(sig);
+      // var sig = await program.provider.connection.requestAirdrop(
+      //   ADMIN_KEYPAIR.publicKey,
+      //   10000 * LAMPORTS_PER_SOL
+      // );
+      
+      // await program.provider.connection.confirmTransaction(sig);
+      // await sleep(500);
+      // sig = await program.provider.connection.requestAirdrop(
+      //   USER_KEYPAIR.publicKey,
+      //   100 * LAMPORTS_PER_SOL
+      // );
+      
+      // await program.provider.connection.confirmTransaction(sig);
+      // await sleep(500);
+      // sig = await program.provider.connection.requestAirdrop(
+      //   OTHER_USER_KEYPAIR.publicKey,
+      //   100 * LAMPORTS_PER_SOL
+      // );
+      
+      // await program.provider.connection.confirmTransaction(sig);
+      // await sleep(1000);
       stakingToken = await createMint(
         program.provider.connection,
         ADMIN_KEYPAIR,
@@ -81,6 +86,7 @@ export function useBrrChainFarmDappProgram() {
         TOKEN_PROGRAM_ID
       );
       console.log("---------------staking token----------------\n",stakingToken.toString())
+      await sleep(1000);
       stakingMint=stakingToken;
       userStakingATA=await createAssociatedTokenAccount(
         program.provider.connection,
@@ -88,7 +94,8 @@ export function useBrrChainFarmDappProgram() {
         stakingMint,
         USER_KEYPAIR.publicKey
         //stakingToken.programId
-      )
+      );
+      await sleep(1000);
       otheruserStakingATA=await createAssociatedTokenAccount(
         program.provider.connection,
         ADMIN_KEYPAIR,
@@ -96,6 +103,7 @@ export function useBrrChainFarmDappProgram() {
         OTHER_USER_KEYPAIR.publicKey
         //stakingToken.programId
       )
+      await sleep(1000);
       adminStakingATA=await createAssociatedTokenAccount(
         program.provider.connection,
         ADMIN_KEYPAIR,
@@ -103,6 +111,7 @@ export function useBrrChainFarmDappProgram() {
         ADMIN_KEYPAIR.publicKey
         //stakingToken.programId
       )
+      await sleep(1000);
       rewardToken= await createMint(
         program.provider.connection,
         ADMIN_KEYPAIR,
@@ -114,18 +123,21 @@ export function useBrrChainFarmDappProgram() {
         TOKEN_PROGRAM_ID
       );
       rewardMint=rewardToken;
+      await sleep(1000);
       userRewardATA=await createAssociatedTokenAccount(
         program.provider.connection,
         ADMIN_KEYPAIR,
         rewardMint,
         USER_KEYPAIR.publicKey
       );
+      await sleep(1000);
       otheruserRewardATA=await createAssociatedTokenAccount(
         program.provider.connection,
         ADMIN_KEYPAIR,
         rewardMint,
         OTHER_USER_KEYPAIR.publicKey
       );
+      await sleep(1000);
       adminRewardATA=await createAssociatedTokenAccount(
         program.provider.connection,
         ADMIN_KEYPAIR,
@@ -152,14 +164,6 @@ export function useBrrChainFarmDappProgram() {
     queryFn: () => program.account.pool.all(),
   });
 
-  // const greet = useMutation({
-  //   mutationKey: ['brrChainFarmDapp', 'greet', { cluster }],
-  //   mutationFn: (keypair: Keypair) => program.methods.greet().rpc(),
-  //   onSuccess: (signature) => {
-  //     transactionToast(signature);
-  //   },
-  //   onError: () => toast.error('Failed to run program'),
-  // });
 
   const init_pool=useMutation({
     mutationKey:['Farming','initializePool',{cluster}],
